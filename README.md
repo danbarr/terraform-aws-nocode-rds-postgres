@@ -1,4 +1,4 @@
-# Terraform module nocode-rds-postgres
+# Terraform module aws-nocode-rds-postgres
 
 Provisions a PostgreSQL RDS instance with an EC2 bastion host.
 
