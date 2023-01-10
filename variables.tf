@@ -6,7 +6,7 @@ variable "prefix" {
 variable "region" {
   type        = string
   description = "The region where the resources are created."
-  default     = "us-east-1"
+  default     = "us-east-2"
 }
 
 variable "env" {
@@ -41,7 +41,7 @@ variable "private_subnet_cidr_secondary" {
 variable "packer_bucket" {
   type        = string
   description = "HCP Packer image bucket name."
-  default     = "ubuntu-focal"
+  default     = "ubuntu20-base"
 }
 
 variable "packer_channel" {
