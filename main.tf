@@ -1,4 +1,5 @@
 terraform {
+  required_version = ">= 1.2"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -23,15 +24,10 @@ provider "aws" {
   }
 }
 
-data "hcp_packer_iteration" "ubuntu" {
-  bucket_name = var.packer_bucket
-  channel     = var.packer_channel
-}
-
 data "hcp_packer_image" "ubuntu" {
   bucket_name    = var.packer_bucket
+  channel        = var.packer_channel
   cloud_provider = "aws"
-  iteration_id   = data.hcp_packer_iteration.ubuntu.ulid
   region         = var.region
 }
 
@@ -69,6 +65,17 @@ resource "aws_instance" "bastion" {
     apt-get -qy update
     apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" install postgresql-client
     EOF
+
+  lifecycle {
+    postcondition {
+      condition     = self.ami == data.hcp_packer_image.ubuntu.cloud_image_id
+      error_message = "Must use the latest available AMI, ${data.hcp_packer_image.ubuntu.cloud_image_id}."
+    }
+    postcondition {
+      condition     = self.public_dns != ""
+      error_message = "EC2 instance must be in a VPC that has public DNS hostnames enabled."
+    }
+  }
 
   tags = {
     Name = "${var.prefix}-hashidb-bastion"
@@ -130,5 +137,20 @@ resource "aws_db_instance" "hashidb" {
   vpc_security_group_ids = [aws_security_group.hashidb.id]
   tags = {
     "key" = "value"
+  }
+
+  lifecycle {
+    postcondition {
+      condition     = self.status != "available"
+      error_message = "The DB instance status must be 'available'."
+    }
+    postcondition {
+      condition     = self.publicly_accessible == false
+      error_message = "The DB instance must not be publicly accessible."
+    }
+    postcondition {
+      condition     = self.allocated_storage >= 20
+      error_message = "The minimum DB size is 20 GB."
+    }
   }
 }
