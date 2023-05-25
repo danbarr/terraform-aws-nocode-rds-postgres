@@ -141,7 +141,7 @@ resource "aws_db_instance" "hashidb" {
 
   lifecycle {
     postcondition {
-      condition     = self.status != "available"
+      condition     = self.status == "available"
       error_message = "The DB instance status must be 'available'."
     }
     postcondition {
