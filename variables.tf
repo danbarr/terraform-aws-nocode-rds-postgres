@@ -13,6 +13,12 @@ variable "env" {
   description = "Value for the environment tag."
 }
 
+variable "department" {
+  type        = string
+  description = "Value for the department tag."
+  default     = "DBA"
+}
+
 variable "address_space" {
   type        = string
   description = "The address space that is used by the VPC."
