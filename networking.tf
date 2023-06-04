@@ -12,8 +12,8 @@ resource "aws_vpc" "hashidb" {
 }
 
 resource "aws_subnet" "hashidb_public" {
-  vpc_id     = aws_vpc.hashidb.id
-  cidr_block = var.public_subnet_cidr
+  vpc_id            = aws_vpc.hashidb.id
+  cidr_block        = var.public_subnet_cidr
   availability_zone = data.aws_availability_zones.available.names[0]
 
   tags = {
@@ -22,9 +22,9 @@ resource "aws_subnet" "hashidb_public" {
 }
 
 resource "aws_subnet" "hashidb_private_primary" {
-  vpc_id     = aws_vpc.hashidb.id
+  vpc_id            = aws_vpc.hashidb.id
   availability_zone = data.aws_availability_zones.available.names[0]
-  cidr_block = var.private_subnet_cidr_primary
+  cidr_block        = var.private_subnet_cidr_primary
 
   tags = {
     Name = "${var.prefix}-rds-private-subnet-primary"
@@ -32,9 +32,9 @@ resource "aws_subnet" "hashidb_private_primary" {
 }
 
 resource "aws_subnet" "hashidb_private_secondary" {
-  vpc_id     = aws_vpc.hashidb.id
+  vpc_id            = aws_vpc.hashidb.id
   availability_zone = data.aws_availability_zones.available.names[1]
-  cidr_block = var.private_subnet_cidr_secondary
+  cidr_block        = var.private_subnet_cidr_secondary
 
   tags = {
     Name = "${var.prefix}-rds-private-subnet-secondary"
