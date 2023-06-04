@@ -45,8 +45,8 @@ variable "private_subnet_cidr_secondary" {
 
 variable "packer_bucket" {
   type        = string
-  description = "HCP Packer image bucket name."
-  default     = "ubuntu20-base"
+  description = "HCP Packer image bucket name for the bastion instance."
+  default     = "ubuntu22-base"
 }
 
 variable "packer_channel" {
@@ -64,7 +64,7 @@ variable "bastion_instance_type" {
 variable "db_instance_type" {
   type        = string
   description = "Specifies the RDS instance type."
-  default     = "db.t4g.medium"
+  default     = "db.t4g.micro"
 }
 
 variable "db_name" {
