@@ -10,7 +10,7 @@ output "db_endpoint" {
 
 output "db_name" {
   description = "Name of the initial database."
-  value = aws_db_instance.hashidb.db_name
+  value       = aws_db_instance.hashidb.db_name
 }
 
 output "db_username" {
