@@ -7,7 +7,7 @@ terraform {
     }
     hcp = {
       source  = "hashicorp/hcp"
-      version = "~> 0.57"
+      version = "~> 0.82"
     }
   }
 }
@@ -24,11 +24,11 @@ provider "aws" {
   }
 }
 
-data "hcp_packer_image" "ubuntu" {
-  bucket_name    = var.packer_bucket
-  channel        = var.packer_channel
-  cloud_provider = "aws"
-  region         = var.region
+data "hcp_packer_artifact" "ubuntu" {
+  bucket_name  = var.packer_bucket
+  channel_name = var.packer_channel
+  platform     = "aws"
+  region       = var.region
 }
 
 resource "aws_security_group" "bastion" {
@@ -54,7 +54,7 @@ resource "aws_security_group" "bastion" {
 }
 
 resource "aws_instance" "bastion" {
-  ami                         = data.hcp_packer_image.ubuntu.cloud_image_id
+  ami                         = data.hcp_packer_artifact.ubuntu.external_identifier
   instance_type               = var.bastion_instance_type
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.hashidb_public.id
@@ -68,8 +68,8 @@ resource "aws_instance" "bastion" {
 
   lifecycle {
     postcondition {
-      condition     = self.ami == data.hcp_packer_image.ubuntu.cloud_image_id
-      error_message = "Must use the latest available AMI, ${data.hcp_packer_image.ubuntu.cloud_image_id}."
+      condition     = self.ami == data.hcp_packer_artifact.ubuntu.external_identifier
+      error_message = "Must use the latest available AMI, ${data.hcp_packer_artifact.ubuntu.external_identifier}."
     }
     postcondition {
       condition     = self.public_dns != ""
